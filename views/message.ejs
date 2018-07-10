@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cộng đồng trao đổi kinh nghiệm quay tay</title>
+    <meta name="description" content="Node.js image upload using express, jQuery using ajax."/>
+    <script src="/public/jquery-3.2.1.js"></script>
+    <!--  SEO -->
+    <meta content='https://nguyentanhau.herokuapp.com/' property='og:url'/>
+    <meta content='NGUYỄN TẤN HẬU' property='og:title'/>
+    <meta content='Nguyễn Tấn Hậu | Chia sẽ tài liệu về Java,chia se tai lieu,chiasetailieu,chiase tailieu, chiasetailieunlu,nluchiasetailieu, JavaScript,C,C++,C#,Ruby,Python'
+          property='og:description'/>
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon"/>
+    <meta name="description"
+          content="Nguyễn Tấn Hậu | Web chat gửi tài liệu dung lượng lớn qua mạng, Chia sẽ tài liệu lập trình về Java, ASP.NET,VB.NET, JavaScript, C/C++, C#, Lập trình mạng, AI"/>
+    <meta name="keywords" content="Web chat gửi tài liệu dung lượng lớn qua mạng,
+    IDE online, code java online, code javascript online, Web chia sẽ full tài liệu lập trình, Web chia sẽ tài liệu trí tuệ nhân tạo, trí tuệ nhân tạo, học máy, trí tuệ nhân tạo
+    đại học nông lâm, chia sẽ code java, chia sẽ code trí tuệ nhân tạo, chia sẽ code javascript, chia sẽ code game caro, đăng nhập và đăng bài viết,
+nguyen tan hau, nguyễn tấn hậu, nguyen tan, hau nguyen, hậu nguyễn, chat công cộng, livecode, phòng chat, gửi file trên 25MB, gửi file qua mạng, file online,
+đại học nông lâm, đại học, nlu, nông lâm, java, javascript nâng cao, lập trình hướng đối tượng, design pattern trong javascript"/>
+    <!--  SEO -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/public/assets/css/message.css">
+    <script src="/public/xuly.js"></script>
+    <link rel="stylesheet" type="text/css" href="/public/layout.css"/>
+    <script src="/public/assets/js/menu.js"></script>
+    <script>
+
+
+        // var socket = io("https://chichchich.herokuapp.com/");
+
+
+        socket.on("server-send-dki-thatbai", function () {
+            alert("Sai Username (co nguoi da dang ki roi!!!)");
+        });
+
+        socket.on("server-send-danhsach-Users", function (data) {
+            $("#boxContent").html("");
+            var current = '<%= User.email %>';
+            data.forEach(function (i) {
+                if (i.indexOf(current) > -1) {
+                    $("#boxContent").append("<div style='color: red' class='user'>" + i + "</div>");
+                } else {
+                    $("#boxContent").append("<div class='user'>" + i + "</div>");
+                }
+            });
+        });
+
+        socket.on("server-send-dki-thanhcong", function (data) {
+            $("#currentUser").html(data);
+        });
+
+        socket.on("server-send-mesage", function (data) {
+            if (!document.hasFocus()) {
+                $('#audio').get(0).play();
+                var noiDung;
+                if (data.nd.indexOf('<a href=') !== -1) {
+                    noiDung = "Đường dẫn đến file"
+                } else {
+                    noiDung = data.nd;
+                }
+
+                var notify = new Notification(
+                    data.un, // Tiêu đề thông báo
+                    {
+                        body: noiDung// Nội dung thông báo
+                    }
+                );
+            }
+            var current = '<%= User.email %>';
+            if (data.un.indexOf(current) > -1) {
+                $("#listMessages").prepend("<div class='ms' style='text-align: right;color: red'>" + data.nd + ":" + data.un + "</div>");
+                $(".ms span#em").css('display', 'none');
+            } else {
+                $("#listMessages").prepend("<div class='ms' style='text-align: left;color: blue'>" + data.un + ":" + data.nd + "</div>");
+                $(".ms span#em").css('display', 'none');
+            }
+
+        });
+
+        socket.on("ai-do-dang-go-chu", function (data) {
+            $("#thongbao").html("<span class='glyphicon glyphicon-pencil'></span>" + data);
+        });
+
+        socket.on("ai-do-STOP-go-chu", function () {
+            $("#thongbao").html("");
+        });
+
+
+        $(document).ready(function () {
+
+            Notification.requestPermission(function (p) {
+            });
+            $('#photos-input').on('change', function () {
+                var size = this.files[0].size;
+                if (size > 5000000) {
+                    alert('Không ổn rồi. Đã bảo là không được hơn 50MB');
+                    $('#photos-input').val('');
+                }
+            });
+            $("#txtMessage").focusin(function () {
+                socket.emit("toi-dang-go-chu");
+            });
+
+            $("#txtMessage").focusout(function () {
+                socket.emit("toi-stop-go-chu");
+            });
+
+            // $("#btnRegister").click(function () {
+            socket.emit("client-send-Username", '<img style="width:15px" src="<%= User.hinhanh %>"></img>' + '<span id="em"><%= User.email %></span>');
+            // });
+
+            $("#btnLogout").click(function () {
+                socket.emit("logout");
+                window.location.href = "/";
+            });
+
+            $("#btnSendMessage").click(function () {
+                var ms = $("#txtMessage");
+                if (ms.val().length === 0) {
+                    $("#thongbao").html('Chưa nhập nội dung kìa óc chó !')
+                } else {
+                    socket.emit("user-send-message", ms.val());
+                    ms.val('');
+                }
+
+            });
+
+            $("#txtMessage").keyup(function (e) {
+                if (e.keyCode === 13) {
+                    $("#btnSendMessage").click();
+                }
+            });
+        });
+
+
+    </script>
+
+</head>
+<body id="body">
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-left" href="/"><img style="padding-top: 4px" src="/public/assets/img/tool.png"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Trang chủ</a></li>
+                <% if(User !== undefined){ %>
+                <li><a style="color: red" href="/message">Chat công cộng</a></li>
+                <li><a href="/addpost">Thêm bài viết</a></li>
+                <% } %>
+            </ul>
+            <% if(User !== undefined){ %>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><%= User.email %> <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/account/profile?email=<%= User.email %>">Trang cá nhân</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a id="btnDangXuat" href="#">Đăng xuất</a></li>
+                    </ul>
+                </li>
+
+                <% } %>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<br><br><br><br>
+<div class="container" style="background-color: white">
+    <div id="wrapper" class="col-md-12">
+        <audio style="display: none" id="audio" src="/uploads/beep-08b.mp3"></audio>
+        <div id="chatForm">
+            <div class="col-md-2 ">
+                <div id="left" class="panel panel-default">
+                    <div id="boxTitle" class="panel-heading">Đang chat</div>
+                    <div class="panel-body" id="boxContent"></div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div id="right">
+                    <div class="row">
+                        <div class="col-md-12" align="right" id="sayHi">
+                            <span id="currentUser"></span>
+                            <input type="button" class="btn btn-danger" id="btnLogout" value="Ra khỏi chỗ này">
+                        </div>
+                    </div>
+                    <hr>
+                    <input class="form-control" type="text" id="txtMessage"/><br>
+                    <input type="button" class="btn btn-success" style="display: none" id="btnSendMessage" value="Gửi"/>
+                    <div class="col-md-6" align="left" id="thongbao"></div>
+                    <hr>
+                    <div style="height: auto" id="listMessages">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <!-- Photos upload Form -->
+                <form id="upload-photos" method="post" action="/upload_photos" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="photos-input">Gửi file</label>
+                        <input id="photos-input" type="file" name="photos[]" multiple="multiple">
+                        <p class="help-block">Chọn 1 file và nhấn send luôn</p>
+                    </div>
+                    <input type="hidden" name="csrf_token" value="just_a_text_field"/>
+                    <input class="btn btn-default" type="submit" name="Photo Uploads" value="Send luôn"/>
+                </form>
+                <br/>
+
+                <!-- Progress Bar -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0"
+                                 aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+                        <div><p id="hienthiphantram"></p></div>
+                    </div>
+                </div>
+                <div id="album" class="row"></div>
+                <hr/>
+                <div id="yeucau" class="row">
+                    <p>- Tất cả mọi người đều có thể xem được các tin nhắn ở đây. Hãy đảm bảo về phát ngôn </p>
+                    <p>- Tại đây có thể upload file lớn đến 50MB trong khi ngoài kia tối đa chỉ 10MB các bạn lưu ý.</p>
+                    <p>- Nếu muốn sử dụng gửi file lớn đến 500 thì đăng xuất và nhấn vào Tôi chỉ là người xài ké</p>
+                    <p>- Nếu quá trình gửi quá chậm hoặc ko gửi được thì hãy reload và thực hiện lại </p>
+                    <p>- Tại đây ko gì được lưu lại và tin nhắn ko là ngoại lệ. Nếu bạn reload thì nó sẽ mất đi tại màn
+                        hình của bạn</p>
+                    <p>- Mọi lỗi hoặc vấn đề xin liên hệ: <a
+                                href="https://www.facebook.com/profile.php?id=100009115420843">Facebook</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<script>
+    /**
+     * Upload the photos using ajax request.
+     *
+     * @param formData
+     */
+    function uploadFiles(formData) {
+        $.ajax({
+            url: '/upload_photos',
+            method: 'post',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhr: function () {
+                var xhr = new XMLHttpRequest();
+
+                // Add progress event listener to the upload.
+                xhr.upload.addEventListener('progress', function (event) {
+                    var progressBar = $('.progress-bar');
+
+                    if (event.lengthComputable) {
+                        var percent = (event.loaded / event.total) * 100;
+                        progressBar.width(percent + '%');
+                        $('#hienthiphantram').html(percent + '%');
+                        if (percent === 100) {
+                            progressBar.removeClass('active');
+                        }
+                    }
+                });
+
+                return xhr;
+            }
+        }).done(handleSuccess).fail(function (xhr, status) {
+            alert(status);
+        });
+    }
+
+    /**
+     * Handle the upload response data from server and display them.
+     *
+     * @param data
+     */
+    function getPhanMoRong(fileName) {
+        var ext = fileName.split('.');
+        return ext[ext.length - 1];
+    }
+
+    function handleSuccess(data) {
+        if (data.length > 0) {
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var img = data[i];
+                var fileName = img.filename;
+                var pmr = getPhanMoRong(fileName)
+//
+                if (pmr === 'jpg' || pmr === 'png' || pmr === 'ico' || pmr === 'gif') {
+                    html += '<div class="col-xs-12 col-md-12"><img width="100%" src="' + img.publicPath + '" alt="' + img.filename + '">';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + '<img width="100%" src="' + img.publicPath + '" alt="' + img.filename + '">' + '</a>');
+                }
+                else if (pmr === 'mp3') {
+                    html += '<audio controls><source src="' + img.publicPath + '" type="audio/mpeg"></audio>';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + '<audio controls><source src="' + img.publicPath + '" type="audio/mpeg"></audio>' + '</a>');
+                } else if (pmr === 'ogg') {
+                    html += '<audio controls><source src="' + img.publicPath + '" type="audio/ogg"></audio>';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + '<audio controls><source src="' + img.publicPath + '" type="audio/ogg"></audio>' + '</a>');
+                } else if (pmr === 'mp4') {
+                    html += '<video width="100%" controls><source src="' + img.publicPath + '" type="video/mp4"></video>';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + '<video width="100%" controls><source src="' + img.publicPath + '" type="video/mp4"></video>' + '</a>');
+                } else if (pmr === 'ogg') {
+                    html += '<video width="100%" controls><source src="' + img.publicPath + '" type="video/ogg"></video>';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + '<video width="100%" controls><source src="' + img.publicPath + '" type="video/ogg"></video>' + '</a>');
+                } else if (pmr === 'pdf') {
+                    html += '<object width="400" height="400" data="' + img.publicPath + '"></object>';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + '<object width="400" height="400" data="' + img.publicPath + '"></object>' + '</a>');
+                } else if (pmr === 'swf') {
+                    html += '<object width="400" height="400" data="' + img.publicPath + '"></object>';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + '<object width="400" height="400" data="' + img.publicPath + '"></object>' + '</a>');
+                } else if (pmr === 'exe' || pmr === 'zip' || pmr === 'rar') {
+                    html += img.filename;
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + img.filename + '</a>');
+                } else {
+                    html += 'Ngoài tầm kiểm soát của hệ thống';
+                    socket.emit("user-send-message", '<a href="/download?fileName=' + img.filename + '" class="thumbnail">' + img.filename + '(Ngoài tầm kiểm soát của hệ thống)' + '</a>');
+                }
+            }
+            $('#album').html(html);
+        } else {//jpg, png, ico, gif,mp3,oog,mp4,exe,zip,rar,pdf,swf
+            alert('No images were uploaded.');
+        }
+    }
+
+    // Set the progress bar to 0 when a file(s) is selected.
+    $('#photos-input').on('change', function () {
+        $('.progress-bar').width('0%');
+    });
+
+
+    // On form submit, handle the file uploads.
+    $('#upload-photos').on('submit', function (event) {
+        event.preventDefault();
+
+        // Get the files from input, create new FormData.
+        var files = $('#photos-input').get(0).files,
+            formData = new FormData();
+        if (files.length === 0) {
+            alert('Select atleast 1 file to upload.');
+            return false;
+        }
+
+        if (files.length > 1) {
+            alert('You can only upload up to 3 files.');
+            return false;
+        }
+
+        // Append the files to the formData.
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            formData.append('photos[]', file, file.name);
+        }
+        // Note: We are only appending the file inputs to the FormData.
+        uploadFiles(formData);
+    });
+
+
+</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>

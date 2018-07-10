@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/public/jquery-3.2.1.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/public/assets/css/post.css">
+    <!--  SEO -->
+    <meta content='https://nguyentanhau.herokuapp.com/' property='og:url'/>
+    <meta content='NGUYỄN TẤN HẬU' property='og:title'/>
+    <meta content='Nguyễn Tấn Hậu | Chia sẽ tài liệu về Java,chia se tai lieu,chiasetailieu,chiase tailieu, chiasetailieunlu,nluchiasetailieu, JavaScript,C,C++,C#,Ruby,Python'
+          property='og:description'/>
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon"/>
+    <meta name="description"
+          content="Nguyễn Tấn Hậu | Web chat gửi tài liệu dung lượng lớn qua mạng, Chia sẽ tài liệu lập trình về Java, ASP.NET,VB.NET, JavaScript, C/C++, C#, Lập trình mạng, AI"/>
+    <meta name="keywords" content="Web chat gửi tài liệu dung lượng lớn qua mạng,
+    IDE online, code java online, code javascript online, Web chia sẽ full tài liệu lập trình, Web chia sẽ tài liệu trí tuệ nhân tạo, trí tuệ nhân tạo, học máy, trí tuệ nhân tạo
+    đại học nông lâm, chia sẽ code java, chia sẽ code trí tuệ nhân tạo, chia sẽ code javascript, chia sẽ code game caro, đăng nhập và đăng bài viết,
+nguyen tan hau, nguyễn tấn hậu, nguyen tan, hau nguyen, hậu nguyễn, chat công cộng, livecode, phòng chat, gửi file trên 25MB, gửi file qua mạng, file online,
+đại học nông lâm, đại học, nlu, nông lâm, java, javascript nâng cao, lập trình hướng đối tượng, design pattern trong javascript"/>
+    <!--  SEO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="/public/assets/js/menu.js"></script>
+    <script>
+        $(document).ready(function () {
+            function getPhanMoRong(data) {
+                var a = data.split('.');
+                return a[a.length - 1];
+            }
+
+            $('.gui').on('click', function () {
+                var maBaiViet = this.id;
+                var noiDung = $("#noidungbinhluan" + maBaiViet).val();
+                $.ajax({
+                    url: "/post/addbinhluan?mabaiviet=" + maBaiViet + "&noidung=" + noiDung,
+                    contentType: false,
+                    processData: false,
+                    type: 'get',
+                    success: function (data) {
+                        if (data.data === 'ok') {
+                            var html = '<div class="box_binhluan">' +
+                                ' <div class="col-sm-1"><img style="width: 50px;height:30px" class="col-sm-6"' +
+                                'src="' + '<%= User.hinhanh %>' + '"></div>' +
+                                '<div class="col-sm-11">' +
+                                '<a style=" color: #ff1a7d" href="/account?email=' + '<%= User.email %>' + '">' + '<%= User.name %>' + '</a>' +
+                                '<p>' + noiDung + '</p>' +
+                                '</div>' +
+                                '</div>';
+                            $('#thembinhluan' + maBaiViet).prepend(html);
+                        } else {
+                            $('#thongbaobinhluan' + maBaiViet).html('Có lỗi xảy ra. Bạn hãy reload hoặc đăng xuất ra và đăng nhập lại');
+                        }
+                    }, error: function (err) {
+
+                    }
+                });
+            });
+
+            $(".baoxau").on('click', function () {
+                var mabaiviet = this.id;
+                $.ajax({
+                    url: '/post/baoxau?mabaiviet=' + mabaiviet,
+                    success: function (data) {
+                        alert("Báo xấu bài viết thành công. Chúng tôi sẽ xem xét lại ở thời gian gần nhất.");
+                    },
+                    error: function (error) {
+                        alert("Đã xảy ra lỗi mời bạn kiểm tra lại");
+                    }
+
+                });
+
+            });
+
+            $(".xoabaiviet").on('click', function () {
+                var mabaiviet = this.id;
+                $.ajax({
+                    url: '/post/xoabaiviet?mabaiviet=' + mabaiviet,
+                    success: function (data) {
+                        if (data.data === 'ok') {
+                            $('#id-status' + mabaiviet).hide();
+                            alert("Xóa bài viết thành công. Bạn không thể khôi phục thông tin này.");
+
+                        } else {
+                            alert("Xóa bài viết không thành công. Nếu bạn cho rằng đây là lỗi hãy báo cho chúng tôi.");
+                        }
+                    },
+                    error: function (error) {
+                        alert("Đã xảy ra lỗi mời bạn kiểm tra lại");
+                    }
+
+                });
+
+            });
+
+            $(".xoabinhluan").on('click', function () {
+                var mabinhluan = this.id;
+                $.ajax({
+                    url: '/post/xoabinhluan?mabinhluan=' + mabinhluan,
+                    success: function (data) {
+                        if (data.data === 'ok') {
+                            $('#box_binhluan' + mabinhluan).hide();
+                            alert("Xóa bình luận thành công. Bạn không thể khôi phục thông tin này.");
+
+                        } else {
+                            alert("Xóa bình luận không công. Nếu bạn cho rằng đây là lỗi hãy báo cho chúng tôi.");
+                        }
+                    },
+                    error: function (error) {
+                        alert("Đã xảy ra lỗi mời bạn kiểm tra lại");
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        /*input {*/
+        /*border-bottom: 10px;*/
+        /*}*/
+    </style>
+    <title>Trang chủ</title>
+</head>
+<body>
+<br><br><br>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-left" href="/"><img style="padding-top: 4px" src="/public/assets/img/tool.png"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a style="color: red" href="/">Trang chủ</a></li>
+                <% if(User !== undefined){ %>
+                <li><a href="/message">Chat công cộng</a></li>
+                <li><a  href="/addpost">Thêm bài viết</a></li>
+                <% } %>
+            </ul>
+            <% if(User !== undefined){ %>
+           
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><%= User.email %> <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/account/profile?email=<%= User.email %>">Trang cá nhân</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a id="btnDangXuat" href="#">Đăng xuất</a></li>
+                    </ul>
+                </li>
+              
+            </ul>
+            <% } %>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<p id="dangbai"></p>
+<div class="container">
+    <br>
+    <% if(User.thongbao != undefined && User.thongbao != ''){ %>
+    <div class="box">
+        <div class="status-box row">
+            <div class="col-sm-12">
+                <b><i class="fa fa-bell-o"></i> <%= User.thongbao %></b>
+            </div>
+        </div>
+        <br>
+    </div>
+    <% } %>
+
+    <% Post.forEach(function (data, index) { %>
+    <div id="id-status<%= data.mabaiviet %>" class="box">
+
+        <div class="status-box row">
+            <div class="col-sm-12">
+                <h2><a style="color: #ff1a7d" href="/account/profile?email=<%= data.email %>">
+                        <img style="width: 50px"
+                             src="<%= getUserOfBaiVietVaBinhLuan(listUser, data.email).hinhanh %>"><%= data.tenbaiviet %>
+                    </a>
+                    <div style="float: right" class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <li class="	fa fa-angle-down"></li>
+                        </button>
+                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
+                            <li><a class="baoxau" id="<%= data.mabaiviet %>">Báo xấu</a></li>
+                            <% if(User.email === data.email){ %>
+                            <li><a class="xoabaiviet" id="<%= data.mabaiviet %>">Xóa bài viết</a></li>
+                            <% } %>
+                        </ul>
+                    </div>
+                </h2>
+
+                <i class="fa fa-calendar-check-o"></i> <%= data.thoigian %>
+                <a><i class="fa fa-diamond"></i> <%= data.danhgia %></a>
+                <div>
+                    <% var dinhKem = data.dinhkem; %>
+                    <% if(dinhKem === '' || dinhKem === undefined){ %>
+                    <% }else{ %>
+                    <% var doDaiDinhKem = dinhKem.split(':'); %>
+                    <% for(var i = 0;i < doDaiDinhKem.length;i++){ %>
+                    <a href="/download?fileName=<%= doDaiDinhKem[i] %>"><i
+                                class="fa fa-file"></i> <%= doDaiDinhKem[i].split('_')[doDaiDinhKem[i].split('_').length - 1] %>
+                    </a>
+                    <% } %>
+                    <% } %>
+                </div>
+                <hr>
+                <p> <%= data.noidung %></p>
+                <br>
+                <% var cd = data.hinhanh; %>
+                <% if(cd === '' || cd === undefined){ %>
+                <% }else{ %>
+                <% var doDai = cd.split(':'); %>
+                <% for(var i = 0;i < doDai.length;i++){ %>
+                <% if(getPhanMoRong(doDai[i]) === 'jpg' || getPhanMoRong(doDai[i]) === 'png' || getPhanMoRong(doDai[i]) === 'gif'){ %>
+                <img class="col-sm-4" src="/file?fileName=<%= doDai[i] %>">
+                <% } %>
+
+                <% if(getPhanMoRong(doDai[i]) === 'mp3'){ %>
+                <audio controls>
+                    <source src="/file?fileName=<%= doDai[i] %>" type="audio/mpeg">
+                </audio>
+                <% } %>
+
+                <% if(getPhanMoRong(doDai[i]) === 'mp4'){ %>
+                <video class="col-sm-4" width="100%" controls>
+                    <source src="/file?fileName=<%= doDai[i] %>" type="video/mp4">
+                </video>
+                <% } %>
+
+                <% }} %>
+                <br><br>
+                <div class="col-sm-12">
+                    <p id="thembinhluan<%= data.mabaiviet %>"></p>
+                    <% var dsBinhLuanCuaBaiVietNay = getDSBinhLuan[data.mabaiviet]; %>
+                    <% dsBinhLuanCuaBaiVietNay.forEach(function (dataDsBinhLuan) { %>
+                    <div id="box_binhluan<%= dataDsBinhLuan.mabinhluan %>" class="box_binhluan">
+                        <div class="col-sm-1"><img style="width: 50px;height: 30px" class="col-sm-6"
+                                                   src="<%= getUserOfBaiVietVaBinhLuan(listUser, dataDsBinhLuan.email).hinhanh %>">
+                        </div>
+                        <div class="col-sm-11">
+                            <a style=" color: #ff1a7d"
+                               href="/account/profile?email=<%= dataDsBinhLuan.email %>"><%= getUserOfBaiVietVaBinhLuan(listUser, dataDsBinhLuan.email).name %></a>
+                            <p><%= dataDsBinhLuan.noidung %>
+                                <% if(dataDsBinhLuan.email === User.email){ %>
+                                <a class="xoabinhluan"
+                                   id="<%= dataDsBinhLuan.mabinhluan %>"
+                                   style="float: right">Xóa</a>
+                                <% } %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+                    <hr>
+                    <div class="addbinhluan">
+                        <div class="col-sm-1"><img style="width: 50px;height: 30px" class="col-sm-6"
+                                                   src="<%= User.hinhanh %>">
+                        </div>
+
+                        <div class="col-sm-11">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="noidungbinhluan<%= data.mabaiviet %>"
+                                       placeholder="Nhập bình luận của bạn...">
+                                <p style="color: red" id="thongbaobinhluan<%= data.mabaiviet %>"></p>
+                                <span class="input-group-btn"><button class="btn btn-default gui "
+                                                                      id="<%= data.mabaiviet %>"
+                                                                      type="button">Gửi</button> </span>
+                            </div>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <% }); %>
+</div>
+</body>
+</html>

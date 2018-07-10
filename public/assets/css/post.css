@@ -1,0 +1,40 @@
+body {
+    font-family: monospace;
+    background-color: silver;
+}
+
+ul.nav.navbar-nav > li > a{
+    color: white;
+
+}
+ul.nav.navbar-nav > li > a:hover{
+    color: white;
+
+}
+.container-fluid{
+    background-color: black;
+}
+.media{
+    border: 2px solid green;
+    border-spacing: 5px;
+    background-color: white;
+}
+.status-box{
+    background-color: white;
+}
+
+.ex1{
+    background-color: white;
+    width: 100%;
+    overflow-wrap: normal;
+}
+
+.navbar{
+    left: 0;
+    max-width: 100%;
+    overflow: visible;
+    position: fixed !important;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/public/jquery-3.2.1.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/public/assets/css/training.css">
+    <!--  SEO -->
+    <meta content='https://nguyentanhau.herokuapp.com/' property='og:url' />
+    <meta content='NGUYỄN TẤN HẬU' property='og:title' />
+    <meta content='Nguyễn Tấn Hậu | Chia sẽ tài liệu về Java,chia se tai lieu,chiasetailieu,chiase tailieu, chiasetailieunlu,nluchiasetailieu, JavaScript,C,C++,C#,Ruby,Python'
+        property='og:description' />
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="Nguyễn Tấn Hậu | Web chat gửi tài liệu dung lượng lớn qua mạng, Chia sẽ tài liệu lập trình về Java, ASP.NET,VB.NET, JavaScript, C/C++, C#, Lập trình mạng, AI"
+    />
+    <meta name="keywords" content="Web chat gửi tài liệu dung lượng lớn qua mạng,
+    IDE online, code java online, code javascript online, Web chia sẽ full tài liệu lập trình, Web chia sẽ tài liệu trí tuệ nhân tạo, trí tuệ nhân tạo, học máy, trí tuệ nhân tạo
+    đại học nông lâm, chia sẽ code java, chia sẽ code trí tuệ nhân tạo, chia sẽ code javascript, chia sẽ code game caro, đăng nhập và đăng bài viết,
+nguyen tan hau, nguyễn tấn hậu, nguyen tan, hau nguyen, hậu nguyễn, chat công cộng, livecode, phòng chat, gửi file trên 25MB, gửi file qua mạng, file online,
+đại học nông lâm, đại học, nlu, nông lâm, java, javascript nâng cao, lập trình hướng đối tượng, design pattern trong javascript"
+    />
+    <!--  SEO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="/public/assets/js/menu.js"></script>
+    <title>Thêm bài viết</title>
+
+    <script>
+        $(document).ready(function () {
+            function getPhanMoRong(fileName) {
+                if (fileName === undefined) {
+                    return 'no';
+                }
+                if (fileName.indexOf('.') === -1) {
+                    return 'no';
+                }
+                let ext = fileName.split('.');
+                return ext[ext.length - 1];
+            }
+
+            $('#form').on('submit', function () {
+                var file1 = $("#file1");
+                var file2 = $("#file2");
+                var file3 = $("#file3");
+                var file4 = $("#file4");
+                var file5 = $("#file5");
+                var file6 = $("#file6");
+                var noidung = $("#noidung");
+                var size1 = file1[0].files[0];
+                var size2 = file2[0].files[0];
+                var size3 = file3[0].files[0];
+                var size4 = file4[0].files[0];
+                var size5 = file5[0].files[0];
+                var size6 = file6[0].files[0];
+                var listHA = ['png','jpg','mp3','mp4'];
+
+                if (size1 !== undefined && (listHA.indexOf(getPhanMoRong(size1.name)) === -1)) {
+                    $('#loiupload1').html("Chỉ nhận định dạng là png, jpg, mp3, mp4");
+                    return false;
+                }else
+                if (size2 !== undefined && (listHA.indexOf(getPhanMoRong(size2.name)) === -1)) {
+                    $('#loiupload2').html("Chỉ nhận định dạng là png, jpg, mp3, mp4");
+                    return false;
+                }else
+                if (size3 !== undefined && (listHA.indexOf(getPhanMoRong(size3.name)) === -1)) {
+                    $('#loiupload2').html("Chỉ nhận định dạng là png, jpg, mp3, mp4");
+                    return false;
+                }else
+
+                if (size4 !== undefined && (listHA.indexOf(getPhanMoRong(size4.name)) > -1)) {
+                    $('#loiupload4').html("Không nhận các tệp là jpg, png, mp3, mp4");
+                    return false;
+                }else
+                if (size5 !== undefined && (listHA.indexOf(getPhanMoRong(size5.name)) > -1)) {
+                    $('#loiupload5').html("Không nhận các tệp là jpg, png, mp3, mp4");
+                    return false;
+                }else
+                if (size6 !== undefined && (listHA.indexOf(getPhanMoRong(size6.name)) > -1)) {
+                    $('#loiupload6').html("Không nhận các tệp là jpg, png, mp3, mp4");
+                    return false;
+                }else
+
+
+                if (size1 !== undefined && size1.size > 10388608) {
+                    $('#loiupload1').html("Không upload quá 10 MB cho tệp");
+                    return false;
+                }else
+                if (size2 !== undefined && size2.size > 10388608) {
+                    $('#loiupload2').html("Không upload quá 10 MB cho tệp");
+                    return false;
+                }else
+                if (size3 !== undefined && size3.size > 10388608) {
+                    $('#loiupload3').html("Không upload quá 10 MB cho tệp");
+                    return false;
+                }else
+                if (size4 !== undefined && size4.size > 10388608) {
+                    $('#loiupload4').html("Không upload quá 10 MB cho tệp");
+                    return false;
+                }else
+                if (size5 !== undefined && size5.size > 10388608) {
+                    $('#loiupload5').html("Không upload quá 10 MB cho tệp");
+                    return false;
+                }else
+                if (size6 !== undefined && size6.size > 10388608) {
+                    $('#loiupload6').html("Không upload quá 10 MB cho tệp");
+                    return false;
+                }else
+                if ($('#noidung').val() === '') {
+                    $('#loiupload7').html("Không được bỏ trống nội dung");
+                    return false;
+                }else{
+                    if (size1 === undefined) {
+                    $("#d1").remove();
+                }
+                if (size2 === undefined) {
+                    $("#d2").remove();
+                }
+                if (size3 === undefined) {
+                    $("#d3").remove();
+                }
+                if (size4 === undefined) {
+                    $("#d4").remove();
+                }
+                if (size5 === undefined) {
+                    $("#d5").remove();
+                }
+                if (size6 === undefined) {
+                    $("#d6").remove();
+                }
+                }
+
+                return true;
+            });
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <br>
+    <br>
+    <br>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-left" href="/">
+                    <img style="padding-top: 4px" src="/public/assets/img/tool.png">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                    </li>
+                    <% if(User !== undefined){ %>
+                        <li>
+                            <a href="/message">Chat công cộng</a>
+                        </li>
+                        <li>
+                            <a style="color: red" href="/addpost">Thêm bài viết</a>
+                        </li>
+                        <% } %>
+                </ul>
+                <% if(User !== undefined){ %>
+                   
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <%= User.email %>
+                                    <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/account/profile?email=<%= User.email %>">Trang cá nhân</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a id="btnDangXuat" href="#">Đăng xuất</a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                    </ul>
+                    <% } %>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <div class="container"><div id="" class="col-sm-2"></div>
+    <div id="" class="col-sm-8">
+        <div align="center"><h3 algin="center">Thêm bài viết mới</h3></div>
+        <form enctype="multipart/form-data" id="form" action="/thembaiviet" method="post">
+            <div id="d1" class="form-group">
+                <label>Hình hoặc video 1</label>
+                <input class="form-control" type="file" name="file1" id="file1">
+                <p id="loiupload1"></p>
+            </div>
+            <div id="d2" class="form-group">
+                <label>Hình hoặc video 2</label>
+                <input class="form-control" type="file" name="file2" id="file2">
+                <p id="loiupload2"></p>
+            </div>
+            <div id="d3" class="form-group">
+                <label>Hình hoặc video 3</label>
+                <input class="form-control" type="file" name="file3" id="file3">
+                <p id="loiupload3"></p>
+            </div>
+            <div id="d4" class="form-group">
+                <label>Tệp đính kèm 1</label>
+                <input class="form-control" type="file" name="file4" id="file4">
+                <p id="loiupload4"></p>
+            </div>
+            <div id="d5" class="form-group">
+                <label>Tệp đính kèm 2</label>
+                <input class="form-control" type="file" name="file5" id="file5">
+                <p id="loiupload5"></p>
+            </div>
+
+            <div id="d6" class="form-group">
+                <label>Tệp đính kèm 3</label>
+                <input class="form-control" type="file" name="file6" id="file6">
+                <p id="loiupload6"></p>
+            </div>
+
+            <div class="form-group">
+                <label>Nội dung</label>
+                <hr>
+                <textarea class="form-control" name="noidung" id="noidung" cols="30" rows="10"></textarea>
+                <hr>
+                <p id="loiupload7"></p>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Add">
+        </form></div>
+    </div>
+</body>
+
+</html>

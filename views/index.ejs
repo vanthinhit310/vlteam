@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/public/jquery-3.2.1.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--  SEO -->
+    <meta content='https://nguyentanhau.herokuapp.com/' property='og:url'/>
+    <meta content='NGUYỄN TẤN HẬU' property='og:title'/>
+    <meta content='Nguyễn Tấn Hậu | Chia sẽ tài liệu về Java,chia se tai lieu,chiasetailieu,chiase tailieu, chiasetailieunlu,nluchiasetailieu, JavaScript,C,C++,C#,Ruby,Python'
+          property='og:description'/>
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon"/>
+    <meta name="description"
+          content="Nguyễn Tấn Hậu | Web chat gửi tài liệu dung lượng lớn qua mạng, Chia sẽ tài liệu lập trình về Java, ASP.NET,VB.NET, JavaScript, C/C++, C#, Lập trình mạng, AI"/>
+    <meta name="keywords" content="Web chat gửi tài liệu dung lượng lớn qua mạng,
+    IDE online, code java online, code javascript online, Web chia sẽ full tài liệu lập trình, Web chia sẽ tài liệu trí tuệ nhân tạo, trí tuệ nhân tạo, học máy, trí tuệ nhân tạo
+    đại học nông lâm, chia sẽ code java, chia sẽ code trí tuệ nhân tạo, chia sẽ code javascript, chia sẽ code game caro, đăng nhập và đăng bài viết,
+nguyen tan hau, nguyễn tấn hậu, nguyen tan, hau nguyen, hậu nguyễn, chat công cộng, livecode, phòng chat, gửi file trên 25MB, gửi file qua mạng, file online,
+đại học nông lâm, đại học, nlu, nông lâm, java, javascript nâng cao, lập trình hướng đối tượng, design pattern trong javascript"/>
+    <!--  SEO -->
+    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <!--<script src="/public/xuly.js"></script>-->
+    <script>
+        $(document).ready(function () {
+            $("#btnLogin").on('click', function () {
+                var email = $("#emailLG").val();
+                var pass = $("#pass").val();
+                $('#thongbaodangnhap').html('Đang đăng nhập...');
+                $.ajax({
+                    url: '/login?email=' + email + '&pass=' + pass,
+                    type: 'get',
+                    success: function (data) {
+                        if (data.data === 'ok') {
+                            window.location.href = '/';
+                        } else {
+                            $('#thongbaodangnhap').html('Sai thông tin hoặc chưa xác nhận mail.');
+                        }
+                    },
+                    error: function (err) {
+                        $('#thongbaodangnhap').html('Xảy ra lỗi nghiêm trọng');
+                    }
+                });
+            });
+        });
+
+    </script>
+    <style>
+        input {
+            border-bottom: 10px;
+        }
+    </style>
+    <title>Đăng nhập</title>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-left" href="/"><img style="padding-top: 4px" src="/public/assets/img/tool.png"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Trang chủ</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+        <div align="center">
+    <div align="center">
+        <h3>Đăng nhập vào tài khoản của bạn</h3>
+    </div><div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <input type="email" class="form-control" id="emailLG" placeholder="Username" required><br>
+        <input type="password" class="form-control" id="pass" placeholder="Mật khẩu" required><br>
+        <p style="color: red" id="thongbaodangnhap"></p>
+        <hr>
+        <button id="btnLogin" class="btn btn-success">Đăng nhập</button>
+    </div></div>
+</div>
+
+</body>
+</html>
