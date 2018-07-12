@@ -13,14 +13,13 @@ const {Pool, Client} = require('pg');
 let multer  = require('multer'); 
 let upload  = multer({ storage: multer.memoryStorage() });
 const pool = new Pool({
-    user: 'jenhnltobjifnz',
-    host: 'ec2-54-204-21-226.compute-1.amazonaws.com',
-    database: 'df07n687imb2qc',
-    password: '9b0b4ec6667eaa650169c1b1ee6510a0b81bfaca52643c853d93b3ce609a512a',
+    user: 'fwhdqmtzdjcqtc',
+    host: 'ec2-107-22-169-45.compute-1.amazonaws.com',
+    database: 'db8h9nks4rhj7d',
+    password: 'a6eb3437dcb42519167354f6894f770830328ae1b024ee61590520f8a207da4d',
     port: 5432, ssl: true
 
 });
-
 router.get('/xoabaiviet', function (req, res, next) {
     var mabaiviet = req.query.mabaiviet;
     var sql = "delete from baiviet where mabaiviet='" + mabaiviet + "'";
